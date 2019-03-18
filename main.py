@@ -96,15 +96,25 @@ def rfm_call(call):
 
 def send_excel(chat_id, date_from):
     bot.send_chat_action(chat_id=chat_id, action='upload_document')
-    clients = Poster.AnaliseClients(Poster.User(token=config.POSTER_TOKEN).get_clients(date_from=date_from))
+    clients, reanimation_clients = Poster.AnaliseClients(Poster.User(token=config.POSTER_TOKEN)
+                                                         .get_clients()) \
+                                                         .filter_clients_by_last_order(date_from=date_from)
 
-    file_name = f"RFM {date_from} to {datetime.datetime.today().date().isoformat()}.xlsx"
-    excel_file = codecs.open(clients.RFM.export_to_excel(file_name), 'rb')
+    clients_file_name = f"RFM {date_from} to {datetime.datetime.today().date().isoformat()}.xlsx"
+    reanimation_file_name = f"Реанимация {date_from}.xlsx"
 
-    bot.send_document(chat_id=chat_id, data=excel_file)
+    clients_excel_file = codecs.open(Poster.RFM(clients).export_to_excel(clients_file_name), 'rb')
+    reanimation_excel_file = codecs.open(Poster.RFM(reanimation_clients).export_to_excel(reanimation_file_name), 'rb')
 
-    excel_file.close()
-    os.remove(file_name)
+    bot.send_document(chat_id=chat_id, data=clients_excel_file)
+    bot.send_chat_action(chat_id=chat_id, action='upload_document')
+    bot.send_document(chat_id=chat_id, data=reanimation_excel_file)
+
+    clients_excel_file.close()
+    reanimation_excel_file.close()
+
+    os.remove(clients_file_name)
+    os.remove(reanimation_file_name)
 
 
 if __name__ == '__main__':

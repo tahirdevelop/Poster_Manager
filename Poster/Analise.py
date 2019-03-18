@@ -5,9 +5,14 @@ import numpy as np
 
 class AnaliseClients:
     def __init__(self, clients) -> None:
-        self.__clients = clients
-        self.RFM = RFM(self.__clients)
+        self.clients = clients
+        self.RFM = RFM(self.clients)
 
+    def filter_clients_by_last_order(self, date_from):
+        date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d').date()
+        scrap = [self.clients.pop(self.clients.index(client))
+                 for client in filter(lambda client: client.last_order_date < date_from, self.clients)]
+        return self.clients, scrap
 
 class RFM:
     def __init__(self, clients) -> None:
@@ -104,7 +109,7 @@ class RFM:
     def export_to_excel(self, path_to_save_and_file_name):
         doc = openpyxl.Workbook()
         ALL = doc.get_active_sheet()
-        ALL.title = 'ALL'
+        ALL.title = 'Все'
 
         self.write_in_sheet(ALL, self.clients_rfm)
         for sheet in sorted(set([client.rfm for client in self.clients_rfm])):

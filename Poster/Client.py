@@ -10,3 +10,5 @@ class Client:
         self.total_payed_sum = kwargs['total_payed_sum']
         self.last_order_date = datetime.datetime.fromtimestamp(int(kwargs['last_order_date']) / 1e3).date()
         self.last_order_date_timestamp = int(kwargs['last_order_date'])
+
+#  TODO CREATE COMPOSITIONS FOR CLIENT AND ORDERS
