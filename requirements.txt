@@ -3,7 +3,7 @@ chardet==3.0.4
 et-xmlfile==1.0.1
 idna==2.8
 jdcal==1.4
-numpy==1.16.2
+numpy==1.22.0
 openpyxl==2.6.1
 peewee==3.9.2
 pyTelegramBotAPI==3.6.6
